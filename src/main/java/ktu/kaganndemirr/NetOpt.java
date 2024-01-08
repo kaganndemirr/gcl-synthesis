@@ -19,8 +19,8 @@ public class NetOpt {
 		//String testcase = "src/TestCases/RTAS/Orion/orion.xml";
 		//String msg = "src/TestCases/Luxi/TC5/msg.txt";
 		//String vls = "src/TestCases/Luxi/TC5/vls.txt";
-		String msg = "Input/msg.txt";
-		String vls = "Input/vls.txt";
+		String msg = "ExampleInput/msg.txt";
+		String vls = "ExampleInput/vls.txt";
 
         //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		// Loading Data
