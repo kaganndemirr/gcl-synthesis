@@ -35,7 +35,7 @@ public class Silviu extends SolutionMethod{
 	public void addCosts() {
 		Cost0(Offset, Costs);
 		Cost1(Offset, Costs);
-		Cost2(Offset, Costs);
+		Cost2(Costs);
 		Cost3(Offset, Costs);
 		OptVar = CostMinimizer(Costs);
 	}
@@ -44,7 +44,7 @@ public class Silviu extends SolutionMethod{
 		FlatArray(Offset, x, NOutports);
 		long allvariables = TotalVars;
 		System.out.println("There are " + allvariables + "Variables");
-		db = solver.makePhase(x,  solver.CHOOSE_FIRST_UNBOUND, solver.ASSIGN_MIN_VALUE);
+		db = solver.makePhase(x, Solver.CHOOSE_FIRST_UNBOUND, Solver.ASSIGN_MIN_VALUE);
 		//db = solver.makePhase(x,  solver.CHOOSE_RANDOM, solver.ASSIGN_RANDOM_VALUE);
 
 	}
@@ -78,13 +78,8 @@ public class Silviu extends SolutionMethod{
     	System.out.println("Solution Found!!, in Time: " + duration);
 		
 		//return false;
-    	
-		if((TotalRuns >= 1)){
-			return true;
-		}else {
-			return false;
 
-		}
+        return TotalRuns >= 1;
 
 	}
 
@@ -126,9 +121,9 @@ public class Silviu extends SolutionMethod{
 	private Solution AssignSolution(IntVar[][][] Offset, IntVar[] costs)  {
 		Current.costValues.clear();
 		Current.Variables = TotalVars;
-		for (int i = 0; i < costs.length; i++) {
-			Current.costValues.add(costs[i].value());
-		}
+        for (IntVar cost : costs) {
+            Current.costValues.add(cost.value());
+        }
 		
 		int counter = 0;
 		for (Switches sw : Current.SW) {
@@ -284,10 +279,8 @@ public class Silviu extends SolutionMethod{
 								}
 								
 								if((preswitchI != null) && (preswitchJ != null)) {
-									Port prePortI = getPortObject(preswitchI, port.AssignedStreams.get(i).Id);
 									int preportindexI = FindPortIndex(preswitchI, port.AssignedStreams.get(i).Id);
 									int prestreamindexI = getStreamIndex(preswitchI, port.AssignedStreams.get(i).Id);
-									Port prePortJ = getPortObject(preswitchJ, port.AssignedStreams.get(j).Id);
 									int preportindexJ = FindPortIndex(preswitchJ, port.AssignedStreams.get(j).Id);
 									int prestreamindexJ = getStreamIndex(preswitchJ, port.AssignedStreams.get(j).Id);
 									int hp = LCM((port.AssignedStreams.get(i).Period / sw.microtick), (port.AssignedStreams.get(j).Period / sw.microtick));
@@ -341,7 +334,7 @@ public class Silviu extends SolutionMethod{
 	}
 
 	private OptimizeVar CostMinimizer(IntVar[] Costs) {
-		IntVar tempIntVar = null;
+		IntVar tempIntVar;
 		tempIntVar = solver.makeProd(Costs[0], 0).var();
 		tempIntVar = solver.makeSum(tempIntVar, solver.makeProd(Costs[1], 0).var()).var();
 		tempIntVar = solver.makeSum(tempIntVar, solver.makeProd(Costs[2], 1).var()).var();
@@ -407,10 +400,9 @@ public class Silviu extends SolutionMethod{
 		return solver.makeMinimize(Costs[1], 1);
 	}
 	
-	private OptimizeVar Cost2(IntVar[][][] Offset, IntVar[] Costs) {
+	private OptimizeVar Cost2(IntVar[] Costs) {
 		IntVar eExpr = null;
-		
-		int counter = 0;
+
 		for (Switches sw : Current.SW) {
 			for (Port port : sw.ports) {
 				if(port.outPort) {		
@@ -426,8 +418,6 @@ public class Silviu extends SolutionMethod{
 						}
 						
 					}
-		
-					counter++;
 				}
 			}
 		}
@@ -444,9 +434,6 @@ public class Silviu extends SolutionMethod{
 			String firstSWName = stream.getFirstSwitch();		
 			String lastSWName = stream.getLastSwitch();
 			if ((firstSWName != null) && (lastSWName != null)) {
-				Port firstPort = getPortObject(firstSWName, stream.Id);
-				int firstportindex = FindPortIndex(firstSWName, stream.Id);
-				int firststreamindex = getStreamIndex(firstSWName, stream.Id);
 				Port lastPort = getPortObject(lastSWName, stream.Id);
 				int lastportindex = FindPortIndex(lastSWName, stream.Id);
 				int laststreamindex = getStreamIndex(lastSWName, stream.Id);
@@ -479,7 +466,7 @@ public class Silviu extends SolutionMethod{
 				if(port.outPort) {
 					if(sw.Name.equals(swName)) {
 		        		Optional<Stream> tempStream = port.AssignedStreams.stream().filter(x -> x.Id == mID).findFirst();
-		        		if (!tempStream.isEmpty()) {
+		        		if (tempStream.isPresent()) {
 		        			return counter;
 		        		}
 					}
@@ -489,13 +476,14 @@ public class Silviu extends SolutionMethod{
 		}
 		return -1;
 	}
+
 	private Port getPortObject(String swName, int mID) {
 		for (Switches sw : Current.SW) {
 			for (Port port : sw.ports) {
 				if(port.outPort) {
 					if(sw.Name.equals(swName)) {
 		        		Optional<Stream> tempStream = port.AssignedStreams.stream().filter(x -> x.Id == mID).findFirst();
-		        		if (!tempStream.isEmpty()) {
+		        		if (tempStream.isPresent()) {
 		        			return port;
 		        		}
 					}
@@ -504,6 +492,7 @@ public class Silviu extends SolutionMethod{
 		}
 		return null;
 	}
+
 	private int getStreamIndex(String swName, int mID) {
 		for (Switches sw : Current.SW) {
 			for (Port port : sw.ports) {
@@ -520,16 +509,19 @@ public class Silviu extends SolutionMethod{
 		}
 		return -1;
 	}
-	private int LCM(int a, int b) {
-		int lcm = (a > b) ? a : b;
-        while(true)
-        {
-            if( lcm % a == 0 && lcm % b == 0 )
-            {
-                break;
-            }
-            ++lcm;
-        }
-		return lcm;
+
+	// GCD (Greatest Common Divisor) hesaplama fonksiyonu
+	public static int gcd(int a, int b) {
+		while (b != 0) {
+			int temp = b;
+			b = a % b;
+			a = temp;
+		}
+		return a;
+	}
+
+	// LCM (Least Common Multiple) hesaplama fonksiyonu
+	public static int LCM(int a, int b) {
+		return (a * b) / gcd(a, b);
 	}
 }

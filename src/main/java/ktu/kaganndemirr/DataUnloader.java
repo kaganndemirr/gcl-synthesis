@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -738,32 +739,32 @@ class DataUnloader {
             e.printStackTrace();
         }
     }
-    
-    
-    
-    private void UnloadPorts(Solution solution, String DirPath, String fName) {
-        try{
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.newDocument();
-            
-            Element root = doc.createElement("Switches");
-            doc.appendChild(root);
-            
-            for (Switches s : solution.SW) {
-            	Element sw = doc.createElement("Switch");
-            	root.appendChild(sw);
-            	Attr sWNaAttr = doc.createAttribute("Name");
-            	sWNaAttr.setValue(s.Name);
+
+
+
+	private void UnloadPorts(Solution solution, String DirPath, String fName) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.newDocument();
+
+			Element root = doc.createElement("Switches");
+			doc.appendChild(root);
+
+			for (Switches s : solution.SW) {
+				Element sw = doc.createElement("Switch");
+				root.appendChild(sw);
+				Attr sWNaAttr = doc.createAttribute("Name");
+				sWNaAttr.setValue(s.Name);
 				sw.setAttributeNode(sWNaAttr);
 				for (Port port : s.ports) {
-					if(port.outPort) {
+					if (port.outPort) {
 						Element portElement = doc.createElement("Port");
 						sw.appendChild(portElement);
 						Attr portNameAttr = doc.createAttribute("ConnectedTo");
 						portNameAttr.setValue(port.connectedTo);
 						portElement.setAttributeNode(portNameAttr);
-						for (int j = 0; j < (solution.Hyperperiod/port.getPeriod()); j++) {
+						for (int j = 0; j < (solution.Hyperperiod / port.getPeriod()); j++) {
 							for (int i = 0; i < port.Topen.length; i++) {
 								Element frame = doc.createElement("Frame");
 								portElement.appendChild(frame);
@@ -778,34 +779,40 @@ class DataUnloader {
 								frame.setAttributeNode(queAttr);
 							}
 						}
-
-
-						
 					}
 				}
 			}
-            
-       
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(doc);
-            Files.createDirectories(Paths.get(DirPath));
-            String path = DirPath + "/" + fName;
-            StreamResult streamResult = new StreamResult(new File(path));
-            transformer.transform(domSource, streamResult);
-            
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void Report(Solution solution, long dur) {
+			// XML dosyasını oluşturmak için Transformer
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+
+			// İndent ayarlarını yapıyoruz
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // 4 boşluklu indent
+
+			DOMSource domSource = new DOMSource(doc);
+			Files.createDirectories(Paths.get(DirPath));
+			String path = DirPath + "/" + fName;
+			StreamResult streamResult = new StreamResult(new File(path));
+
+			// XML'i dönüştür ve kaydet
+			transformer.transform(domSource, streamResult);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public void Report(Solution solution, long dur) {
     	CreateReport(dur);
     	if(GenerateOMNETPP) {
     		String omnetpath = defaltDirPath + "/OMNET";
     		UnloadOMNET(solution, omnetpath);
     	}
     }
+
     public void CreateReport(long dur) {
 
     	try {
@@ -845,31 +852,31 @@ class DataUnloader {
             e.printStackTrace();
         }
     }
-    private void UnloadStreams(Solution solution, String DirPath, String fName){
-        try{
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.newDocument();
-            
-            Element root = doc.createElement("Streams");
-            doc.appendChild(root);
-            for (Stream stream : solution.streams) {
+
+	private void UnloadStreams(Solution solution, String DirPath, String fName) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.newDocument();
+
+			Element root = doc.createElement("Streams");
+			doc.appendChild(root);
+
+			for (Stream stream : solution.streams) {
 				Element s = doc.createElement("Stream");
 				root.appendChild(s);
 				Attr IDatrib = doc.createAttribute("ID");
 				IDatrib.setValue(String.valueOf(stream.Id));
 				s.setAttributeNode(IDatrib);
-				for (String portName : stream.routingList) {
+				for (String portName : stream.CroutingList) {
 					Element port = doc.createElement("Port");
 					port.appendChild(doc.createTextNode(portName));
 					s.appendChild(port);
 					Port portObj = getPortObject(solution, portName, stream.Id);
 					int stramIndex = getStreamIndex(solution, portName, stream.Id);
-					
-					if(portObj != null) {
-						for (int i = 0; i < portObj.indexMap[stramIndex].length; i++) {
 
-							
+					if (portObj != null) {
+						for (int i = 0; i < portObj.indexMap[stramIndex].length; i++) {
 							Element frame = doc.createElement("Frame");
 							port.appendChild(frame);
 							Attr openAttr = doc.createAttribute("Open");
@@ -881,32 +888,34 @@ class DataUnloader {
 							Attr queAttr = doc.createAttribute("Que");
 							queAttr.setValue(String.valueOf(portObj.affiliatedQue[portObj.indexMap[stramIndex][i]]));
 							frame.setAttributeNode(queAttr);
-							
 						}
-					}				
-
+					}
 				}
-				
-				
 			}
-                 
-            
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(doc);
-            Files.createDirectories(Paths.get(DirPath));
-            String path = DirPath + "/" + fName;
-            StreamResult streamResult = new StreamResult(new File(path));
-            transformer.transform(domSource, streamResult);
-            
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+			// XML dosyasını oluşturmak için Transformer
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+
+			// İndent ayarlarını yapıyoruz
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // 4 boşluklu indent
+
+			DOMSource domSource = new DOMSource(doc);
+			Files.createDirectories(Paths.get(DirPath));
+			String path = DirPath + "/" + fName;
+			StreamResult streamResult = new StreamResult(new File(path));
+
+			// XML'i dönüştür ve kaydet
+			transformer.transform(domSource, streamResult);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 
-    }
-    private void CreateJitterTimeInterface(Solution solution, String DirPath, String solutionName) {
+	private void CreateJitterTimeInterface(Solution solution, String DirPath, String solutionName) {
     	try {
             Files.createDirectories(Paths.get(DirPath));
     		String filename = DirPath + "/" + solutionName + ".txt" ;

@@ -1,31 +1,27 @@
 package ktu.kaganndemirr;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 class Solution {
 	public Solution(DataLoader dataLoader) {
-        streams = new ArrayList<Stream>();
-        ES = new ArrayList<EndSystems>();
-        SW = new ArrayList<Switches>();
-        costValues = new ArrayList<Long>();
-        Apps = new ArrayList<App>();
+        streams = new ArrayList<>();
+        ES = new ArrayList<>();
+        SW = new ArrayList<>();
+        costValues = new ArrayList<>();
+        Apps = new ArrayList<>();
         Create(dataLoader.getMessages(), dataLoader.getRoutes(), dataLoader.getApps(), dataLoader.getSwitches());
         Initialize();
 	}
 	public Solution(List<Stream> _streams, List<EndSystems> _es, List<Switches> _sw, List<App> _apps, List<Long> _costs, int _hyperperiod, int _variables) {
-        streams = new ArrayList<Stream>();
-        ES = new ArrayList<EndSystems>();
-        SW = new ArrayList<Switches>();
-        Apps = new ArrayList<App>();
-        costValues = new ArrayList<Long>();
-        costValues.clear();
+        streams = new ArrayList<>();
+        ES = new ArrayList<>();
+        SW = new ArrayList<>();
+        Apps = new ArrayList<>();
+        costValues = new ArrayList<>();
         Variables = _variables;
-        
-        for (Long val : _costs) {
-			costValues.add(val);
-		}
+
+        costValues.addAll(_costs);
         for (Stream s : _streams) {
 			streams.add(s.Clone());
 		}
@@ -157,13 +153,22 @@ class Solution {
 			sw.initiate();
 		}
     }
-    private int LCM(int a, int b) {
-		int lcm = Math.max(a, b);
-        while (lcm % a != 0 || lcm % b != 0) {
-            ++lcm;
-        }
-		return lcm;
+
+	// GCD (Greatest Common Divisor) hesaplama fonksiyonu
+	public static int gcd(int a, int b) {
+		while (b != 0) {
+			int temp = b;
+			b = a % b;
+			a = temp;
+		}
+		return a;
 	}
+
+	// LCM (Least Common Multiple) hesaplama fonksiyonu
+	public static int LCM(int a, int b) {
+		return (a * b) / gcd(a, b);
+	}
+
     public int getNOutPorts() {
     	int Outports = 0;
 		for (Switches sw : SW) {
@@ -175,24 +180,10 @@ class Solution {
 		}
 		return Outports;
     }
-    public int getNOutQueues() {
-    	int Outqueues = 0;
-		for (Switches sw : SW) {
-			for (Port port : sw.ports) {
-				if(port.outPort) {
-					for (Que q : port.ques) {
-						if(q.isUsed()) {
-							Outqueues++;
-						}
-					}
-					
-				}
-			}
-		}
-		return Outqueues;
-    }
+
+
     public List<String> getOutPorts(){
-    	List<String> nameStrings = new ArrayList<String>();
+    	List<String> nameStrings = new ArrayList<>();
 		for (Switches sw : SW) {
 			for (Port port : sw.ports) {
 				if(port.outPort) {
@@ -205,21 +196,13 @@ class Solution {
     public Solution Clone() {
     	return new Solution(streams, ES, SW, Apps, costValues, (Hyperperiod), Variables);
     }
-	public Switches getSwithObject(String name) {
-		for (Switches sw : SW) {
-			if(sw.Name.equals(name)) {
-				return sw;
-			}
-		}
-		return null;
-	}
+
     public List<Integer> getCosts() {
-    	List<Integer> CostTerms = new ArrayList<Integer>(); 
+    	List<Integer> CostTerms = new ArrayList<>();
     	for (Long temp : costValues) {
     		CostTerms.add(temp.intValue());
 		}
     	return CostTerms;
     }
-
 
 }

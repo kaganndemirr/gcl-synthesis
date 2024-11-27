@@ -223,18 +223,20 @@ public class ExternalAssessment extends SearchMonitor{
     	
     	
     }
-	
-	private int LCM(int a, int b) {
-		int lcm = (a > b) ? a : b;
-        while(true)
-        {
-            if( lcm % a == 0 && lcm % b == 0 )
-            {
-                break;
-            }
-            ++lcm;
-        }
-		return lcm;
+
+	// GCD (Greatest Common Divisor) hesaplama fonksiyonu
+	public static int gcd(int a, int b) {
+		while (b != 0) {
+			int temp = b;
+			b = a % b;
+			a = temp;
+		}
+		return a;
+	}
+
+	// LCM (Least Common Multiple) hesaplama fonksiyonu
+	public static int LCM(int a, int b) {
+		return (a * b) / gcd(a, b);
 	}
 	
 

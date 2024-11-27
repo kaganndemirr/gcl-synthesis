@@ -1,0 +1,2 @@
+# link rate, integrationMode, bandwidthFractionA, bandwidthFractionB
+1000, Preemption, 0.60, 0.15,

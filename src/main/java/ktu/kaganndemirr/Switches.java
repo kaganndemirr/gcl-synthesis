@@ -1,17 +1,11 @@
 package ktu.kaganndemirr;
 
-import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.PrimitiveIterator.OfDouble;
-
-import com.sun.security.auth.NTDomainPrincipal;
-
-
 
 
 public class Switches {
@@ -52,12 +46,17 @@ public class Switches {
 		streams.add(s);
 	}
 
-	public int LCM(int a, int b) {
-		int lcm = Math.max(a, b);
-        while (lcm % a != 0 || lcm % b != 0) {
-            ++lcm;
-        }
-		return lcm;
+	public static int gcd(int a, int b) {
+		while (b != 0) {
+			int temp = b;
+			b = a % b;
+			a = temp;
+		}
+		return a;
+	}
+
+	public static int LCM(int a, int b) {
+		return (a * b) / gcd(a, b);
 	}
 
 	public void setGraph(List<String> nodes, List<Integer> Ids) {

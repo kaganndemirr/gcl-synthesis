@@ -62,12 +62,19 @@ public class Que{
         return false;
     }
 
-    public int LCM(int a, int b) {
-        int lcm = Math.max(a, b);
-        while (lcm % a != 0 || lcm % b != 0) {
-            ++lcm;
+    // GCD (Greatest Common Divisor) hesaplama fonksiyonu
+    public static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
         }
-        return lcm;
+        return a;
+    }
+
+    // LCM (Least Common Multiple) hesaplama fonksiyonu
+    public static int LCM(int a, int b) {
+        return (a * b) / gcd(a, b);
     }
 
     public Que Clone() {

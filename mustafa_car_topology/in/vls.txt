@@ -1,0 +1,14 @@
+vl1 : DA-Cam,SW1 ; SW1,HU ;
+vl2 : DA-Cam,SW1 ; SW1,SW2 ; SW2,CU ;
+vl3 : HU,SW1 ; SW1,SW2 ; SW2,CU ;
+vl4 : HU,SW1 ; SW1,DA-Cam ;
+vl5 : CU,SW2 ; SW2,SW1 ; SW1,HU ;
+vl6 : CU,SW2 ; SW2,SW1 ; SW1,DA-Cam ;
+vl7 : Cam1,SW1 ; SW1,DA-Cam ;
+vl8 : Cam2,SW1 ; SW1,DA-Cam ;
+vl9 : Cam3,SW1 ; SW1,DA-Cam ;
+vl10 : Cam4,SW2 ; SW2,SW1 ; SW1,DA-Cam ;
+vl11 : DA-Cam,SW1 ; SW1,HU ;
+vl12 : Telematics,SW2 ; SW2,RSE ;
+vl13 : Telematics,SW2 ; SW2,SW1 ; SW1,HU ;
+vl14 : CD/DVD,SW2 ; SW2,RSE ;
