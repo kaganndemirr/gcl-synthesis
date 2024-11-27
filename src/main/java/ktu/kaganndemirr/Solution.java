@@ -116,16 +116,16 @@ class Solution {
         
     }
     private void setSourceES(Routes item) {
-    	Optional<EndSystems> tempSourcEndSystems = ES.stream().filter(x -> x.Name.equals(item.nodes.get(0))).findFirst();
+    	Optional<EndSystems> tempSourcEndSystems = ES.stream().filter(x -> x.Name.equals(item.nodes.getFirst())).findFirst();
     	if(tempSourcEndSystems.isEmpty()) {
-    		EndSystems temp = new EndSystems(item.nodes.get(0));
+    		EndSystems temp = new EndSystems(item.nodes.getFirst());
     		for (int ID : item.messsageIDs) {
-    			temp.addoutID(ID);
+    			temp.addOutID(ID);
 			}
     		ES.add(temp);
     	}else {
     		for (int ID : item.messsageIDs) {
-    			tempSourcEndSystems.get().addoutID(ID);
+    			tempSourcEndSystems.get().addOutID(ID);
 			}
     		
     	}
@@ -136,12 +136,12 @@ class Solution {
     	if(tempSinkEndSystems.isEmpty()) {
     		EndSystems temp = new EndSystems(item.nodes.get(NodeSize-1));
     		for (int ID : item.messsageIDs) {
-    			temp.addinID(ID);
+    			temp.addInID(ID);
 			}
     		ES.add(temp);
     	}else {
     		for (int ID : item.messsageIDs) {
-    			tempSinkEndSystems.get().addinID(ID);
+    			tempSinkEndSystems.get().addInID(ID);
 			}
     	}
     }
@@ -158,13 +158,8 @@ class Solution {
 		}
     }
     private int LCM(int a, int b) {
-		int lcm = (a > b) ? a : b;
-        while(true)
-        {
-            if( lcm % a == 0 && lcm % b == 0 )
-            {
-                break;
-            }
+		int lcm = Math.max(a, b);
+        while (lcm % a != 0 || lcm % b != 0) {
             ++lcm;
         }
 		return lcm;

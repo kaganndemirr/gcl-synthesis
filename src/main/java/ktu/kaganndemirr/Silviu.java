@@ -210,8 +210,8 @@ public class Silviu extends SolutionMethod{
 				if(port.outPort) {
 					for (int i = 0; i < port.AssignedStreams.size(); i++) {
 						String prevSWname = null;
-						if (!port.AssignedStreams.get(i).isThisFirstSwtich(sw.Name)) {
-							prevSWname = port.AssignedStreams.get(i).getpreviousSwitch(sw.Name);
+						if (!port.AssignedStreams.get(i).isThisFirstSwitch(sw.Name)) {
+							prevSWname = port.AssignedStreams.get(i).getPreviousSwitch(sw.Name);
 
 						}
 						if(prevSWname != null) {
@@ -274,12 +274,12 @@ public class Silviu extends SolutionMethod{
 							if (i != j) {
 								String preswitchI = null;
 								String preswitchJ = null;
-								if (!port.AssignedStreams.get(i).isThisFirstSwtich(sw.Name)) {
-									preswitchI = port.AssignedStreams.get(i).getpreviousSwitch(sw.Name);
+								if (!port.AssignedStreams.get(i).isThisFirstSwitch(sw.Name)) {
+									preswitchI = port.AssignedStreams.get(i).getPreviousSwitch(sw.Name);
 
 								}
-								if (!port.AssignedStreams.get(j).isThisFirstSwtich(sw.Name)) {
-									preswitchJ = port.AssignedStreams.get(j).getpreviousSwitch(sw.Name);
+								if (!port.AssignedStreams.get(j).isThisFirstSwitch(sw.Name)) {
+									preswitchJ = port.AssignedStreams.get(j).getPreviousSwitch(sw.Name);
 
 								}
 								

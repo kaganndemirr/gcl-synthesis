@@ -13,21 +13,18 @@ public class EndSystems {
 	}
 	public EndSystems(String _name, List<Integer> _in, List<Integer> _out) {
 		Name = _name;
-		for (int inval : _in) {
-			inStreamsIDs.add(inval);
-		}
-		for (int outval : _out) {
-			outStreamsIDs.add(outval);
-		}
+        inStreamsIDs.addAll(_in);
+        outStreamsIDs.addAll(_out);
 		
 	}
 	
-	public void addinID(int ID) {
+	public void addInID(int ID) {
 		inStreamsIDs.add(ID);
 	}
-	public void addoutID(int ID) {
+	public void addOutID(int ID) {
 		outStreamsIDs.add(ID);
 	}
+
 	public EndSystems Clone() {
 		return new EndSystems(Name, inStreamsIDs, outStreamsIDs);
 	}

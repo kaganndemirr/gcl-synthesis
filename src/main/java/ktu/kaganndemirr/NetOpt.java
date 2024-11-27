@@ -1,49 +1,28 @@
 package ktu.kaganndemirr;
 
-import ktu.kaganndemirr.ORSolver.methods;
-
 public class NetOpt {
 
 	public static void main(String[] args) {
-		//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		//Test Cases
-        //String testcase = "src/TestCases/Jorge/JorgeCase1.xml";
-        //String testcase = "src/TestCases/GMModified/GML.xml";
-        //String testcase = "src/TestCases/Orion/Orig/orion.xml";
-        //String testcase = "src/TestCases/GM/GM.xml";
-		//String testcase = "src/TestCases/FORA/input.xml";
-		//String testcase = "src/TestCases/Initial/testcase1.xml";
-		//String testcase = "src/TestCases/Initial/testcase2.xml";
-		//String testcase = "src/TestCases/GM/GM.xml";
-		//String testcase = "src/TestCases/TII/TestCase1/test.xml";
-		//String testcase = "src/TestCases/RTAS/Orion/orion.xml";
-		//String msg = "src/TestCases/Luxi/TC5/msg.txt";
-		//String vls = "src/TestCases/Luxi/TC5/vls.txt";
-		String msg = "ExampleInput/msg.txt";
-		String vls = "ExampleInput/vls.txt";
+//		String msg = "in_TIE_TT+AVB_Orion/in/msg.txt";
+//		String vls = "in_TIE_TT+AVB_Orion/in/vls.txt";
+//
+//        String msg = "in_TIE_TT+AVB_Orion_Only_TT/in/msg.txt";
+//        String vls = "in_TIE_TT+AVB_Orion_Only_TT/in/vls.txt";
+//
+//        String msg = "debug_scenario/msg.txt";
+//        String vls = "debug_scenario/vls.txt";
 
-        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		// Loading Data
+        String msg = "mustafa_industrial_topology/in/msg.txt";
+        String vls = "mustafa_industrial_topology/in/vls.txt";
+
         DataLoader dataLoader = new DataLoader();
-        //dataLoader.Load(testcase);
-        //Method call for old input version
         dataLoader.Load(msg, vls);  
 
-        //Loading Completed
-        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        //Creating Solutions
         Solution initial_Solution = new Solution(dataLoader);
-         
-        //Solution Created
-        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        //Creating Solver
-
-        //Select Between Methods
-        methods chosenMethods = methods.Silviu;
         
-        boolean debugmode = true;
+        boolean debugmode = false;
         
-        ORSolver optimizer = new ORSolver(chosenMethods, initial_Solution, debugmode);
+        ORSolver optimizer = new ORSolver(initial_Solution, debugmode);
         
         
         //Run optimizer
@@ -53,9 +32,6 @@ public class NetOpt {
         }
 
         optimizer.Run();
-        
-        //optimization Finished
-        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	}
 

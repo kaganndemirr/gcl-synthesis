@@ -43,12 +43,8 @@ public class Stream {
         CroutingList = new ArrayList<String>();
         Hyperperiod = _hyper;
         N_instances = _instances;
-        for (String s : _routing) {
-			routingList.add(s);
-		}
-        for (String s : _crouting) {
-			CroutingList.add(s);
-		}
+        routingList.addAll(_routing);
+        CroutingList.addAll(_crouting);
 
     }
 
@@ -82,17 +78,17 @@ public class Stream {
     }
     public String getFirstSwitch() {
     	if(!routingList.isEmpty()) {
-    		return routingList.get(0);
+    		return routingList.getFirst();
     	}
     	return null;
     }
     public String getLastSwitch() {
     	if(!routingList.isEmpty()) {
-    		return routingList.get(routingList.size() - 1 );
+    		return routingList.getLast();
     	}
     	return null;
     }
-    public String getpreviousSwitch(String currentSW) {
+    public String getPreviousSwitch(String currentSW) {
     	for (int i = 0; i < routingList.size(); i++) {
 			if(routingList.get(i).equals(currentSW)) {
 				return routingList.get(i - 1);
@@ -100,7 +96,7 @@ public class Stream {
 		}
     	return null;
     }
-    public boolean isThisFirstSwtich(String swName) {
+    public boolean isThisFirstSwitch(String swName) {
     	for (int i = 0; i < routingList.size(); i++) {
 			if(routingList.get(i).equals(swName)) {
 				if(i == 0){
@@ -117,6 +113,7 @@ public class Stream {
 		}
 		return nameStrings;
     }
+
     public Stream Clone() {
     	return new Stream(Id, Period, Deadline, Size, Priority, offset, Hyperperiod, N_instances, routingList, CroutingList );
     }

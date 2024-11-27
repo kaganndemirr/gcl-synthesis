@@ -1,163 +1,131 @@
 package ktu.kaganndemirr;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 class DataConverter {
-	
-	//Covertes the test cases from Niklas to .xml File
-	Map<String, String> map = new HashMap<String, String>();
-	
-	//Constructor
-	public DataConverter() {
-		
-	}
-	//Convert txt Files containing streams and pathes to xml File
-	public void txt2xml(String StraminputPath, String RouteinputPath, String outputPath) {
-		try {
-            FileReader fileReader = new FileReader(StraminputPath);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.newDocument();
-            Element root = doc.createElement("Network");
-            doc.appendChild(root);
-        	Element messages = doc.createElement("Messages");
-        	root.appendChild(messages);
-            
-            String line = null;
-            int counter = 1;
-            while((line = bufferedReader.readLine()) != null) {
-            	
-            	if(!line.contains("#")) {
-					Element m = doc.createElement("Message");
-					messages.appendChild(m);
-					
-					Attr idAttr = doc.createAttribute("id");
-					idAttr.setValue(String.valueOf(counter));
-					m.setAttributeNode(idAttr);
-					
-					
-					String[] parts = line.split(", ");
-					
-					Attr sizeAttr = doc.createAttribute("size");
-					sizeAttr.setValue(parts[1]);
-					m.setAttributeNode(sizeAttr);
-					
-					Attr deadlineAttr = doc.createAttribute("deadline");
-					int deadline = (int) (Double.parseDouble(parts[2]));
-					
-					deadlineAttr.setValue(String.valueOf(deadline));
-					m.setAttributeNode(deadlineAttr);
-					
-					Attr periodAttr = doc.createAttribute("period");
-					periodAttr.setValue(parts[6]);
-					m.setAttributeNode(periodAttr);
-					
-					
 
-					
-					Attr prioAttr = doc.createAttribute("priority");
-					prioAttr.setValue(parts[5]);
-					m.setAttributeNode(prioAttr);
-					
-					
-					Attr offsetAttr = doc.createAttribute("offset");
-					offsetAttr.setValue(String.valueOf(0));
-					m.setAttributeNode(offsetAttr);
-					
-					//map.put(parts[3], String.valueOf(counter));
-					map.put(String.valueOf(counter), parts[3] );
-					System.out.println(map.get(String.valueOf(counter)));
-		
-            		counter++;
-            	}              
-            }
-            bufferedReader.close();
-            
-            FileReader fileReader2 = new FileReader(RouteinputPath);
-            BufferedReader bufferedReader2 = new BufferedReader(fileReader2);
-        	Element routes = doc.createElement("Routing");
-        	root.appendChild(routes);           
-            
-            String l = null;
-            int c = 1;
-            while((l = bufferedReader2.readLine()) != null) {
-            	
-            	if(!l.contains("#")) {
-					Element r = doc.createElement("Route");
-					routes.appendChild(r);
-						
-					Attr idAttr = doc.createAttribute("id");
-					idAttr.setValue(String.valueOf(c));
-					r.setAttributeNode(idAttr);
-					
-					
-					String[] firstparts = l.split(" : ");
-					String[] secondparts = firstparts[1].split(" ; ");
-					
-					Element nodes = doc.createElement("Nodes");
-					r.appendChild(nodes);
-					
-					for (int i = 0; i < secondparts.length; i++) {
-						String[] thirdparts = secondparts[i].split(",");
-			            Element node = doc.createElement("node");
-			            node.appendChild(doc.createTextNode(thirdparts[0]));
-			            nodes.appendChild(node);
-			            if(i == (secondparts.length - 1)) {
-			            	String[] fourthparts = thirdparts[1].split(" ");
-				            Element node2 = doc.createElement("node");
-				            node2.appendChild(doc.createTextNode(fourthparts[0]));
-				            nodes.appendChild(node2);
-			            }
-					}
-					
-					Element ms = doc.createElement("messages");
-					r.appendChild(ms);
-					
-		            
-		            for (String key : map.keySet()) {
-						if(map.get(key).equals(firstparts[0])) {
-							Element mId = doc.createElement("messageID");
-							mId.appendChild(doc.createTextNode(key));
-							ms.appendChild(mId);
+	public static void txt2xml(String streamInputPath, String routeInputPath, String outputPath) {
+		Map<String, String> messageMap = new HashMap<>();
+		Path tempFilePath = Path.of(outputPath); // Geçici dosya
+
+		try (
+				var streamLines = Files.lines(Path.of(streamInputPath));
+				var routeLines = Files.lines(Path.of(routeInputPath));
+				var writer = new FileWriter(tempFilePath.toFile())
+		) {
+			XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
+			XMLStreamWriter xmlWriter = xmlOutputFactory.createXMLStreamWriter(writer);
+
+			// XML Belgesini oluştur
+			xmlWriter.writeStartDocument("UTF-8", "1.0");
+			xmlWriter.writeStartElement("Network");
+
+			// Messages
+			xmlWriter.writeStartElement("Messages");
+			int messageId = 1;
+			for (String line : streamLines.toList()) {
+				if (!line.startsWith("#") && !line.isBlank()) {
+					String[] parts = line.split(", ");
+					xmlWriter.writeStartElement("Message");
+					xmlWriter.writeAttribute("id", String.valueOf(messageId));
+					xmlWriter.writeAttribute("size", parts[1]);
+					xmlWriter.writeAttribute("deadline", String.valueOf((int) Double.parseDouble(parts[2])));
+					xmlWriter.writeAttribute("period", String.valueOf((int) Double.parseDouble(parts[5])));
+					xmlWriter.writeAttribute("priority", Constant.trafficTypePriorityMap.get(parts[4]));
+					xmlWriter.writeAttribute("offset", String.valueOf((int) Double.parseDouble(parts[6])));
+
+					messageMap.put(String.valueOf(messageId), parts[3]);
+					xmlWriter.writeEndElement(); // </Message>
+					messageId++;
+				}
+			}
+			xmlWriter.writeEndElement(); // </Messages>
+
+			// Routing
+			xmlWriter.writeStartElement("Routing");
+			int routeId = 1;
+			for (String line : routeLines.toList()) {
+				if (!line.startsWith("#") && !line.isBlank()) {
+					String[] firstParts = line.split(" : ");
+					String[] secondParts = firstParts[1].split(" ; ");
+
+					xmlWriter.writeStartElement("Route");
+					xmlWriter.writeAttribute("id", String.valueOf(routeId));
+
+					xmlWriter.writeStartElement("Nodes");
+					for (int i = 0; i < secondParts.length; i++) {
+						String[] nodeParts = secondParts[i].split(",");
+						xmlWriter.writeStartElement("node");
+						xmlWriter.writeCharacters(nodeParts[0]);
+						xmlWriter.writeEndElement(); // </node>
+						if (i == secondParts.length - 1) {
+							String[] lastNodeParts = nodeParts[1].split(" ");
+							xmlWriter.writeStartElement("node");
+							xmlWriter.writeCharacters(lastNodeParts[0]);
+							xmlWriter.writeEndElement(); // </node>
 						}
 					}
-		            
-		            
-					
-					c++;
-					
-            	}      	
-            
-            }
-             
-            bufferedReader2.close();
-            
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(doc);
-            StreamResult streamResult = new StreamResult(new File(outputPath));
-            transformer.transform(domSource, streamResult);
-            
-			
-		} catch(Exception ex) {
+					xmlWriter.writeEndElement(); // </Nodes>
 
-                ex.printStackTrace();
+					xmlWriter.writeStartElement("messages");
+					for (var entry : messageMap.entrySet()) {
+						if (entry.getValue().equals(firstParts[0])) {
+							xmlWriter.writeStartElement("messageID");
+							xmlWriter.writeCharacters(entry.getKey());
+							xmlWriter.writeEndElement(); // </messageID>
+						}
+					}
+					xmlWriter.writeEndElement(); // </messages>
+
+					xmlWriter.writeEndElement(); // </Route>
+					routeId++;
+				}
+			}
+			xmlWriter.writeEndElement(); // </Routing>
+
+			xmlWriter.writeEndElement(); // </Network>
+			xmlWriter.writeEndDocument();
+			xmlWriter.flush();
+
+			// Girintili XML'e dönüştür
+			formatXml(tempFilePath.toString(), outputPath);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-            
 	}
+
+	private static void formatXml(String inputPath, String outputPath) {
+		try {
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+			DOMSource source = new DOMSource(
+					DocumentBuilderFactory.newInstance()
+							.newDocumentBuilder()
+							.parse(new File(inputPath))
+			);
+			StreamResult result = new StreamResult(new File(outputPath));
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
