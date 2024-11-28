@@ -106,44 +106,6 @@ class DataLoader {
         return new Messages(_id, name, _period,_deadline,_size, _priority, _offset);
     }
 
-    // Read Luxi WCDelay file
-    public HashMap<Integer, Integer> LoadLuxiReport(String folderPath) {
-    	String fileName = folderPath + "/out/WCEndtoEndDelay.txt";
-    	HashMap<Integer, Integer> delays = new HashMap<Integer, Integer>();
-    	try {
-            FileReader fileReader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
-            
-            while ((line = bufferedReader.readLine()) != null) {
-            	String[] parts = line.split(",");
-            	int StreamID = (int) ToNumber(parts[0]);
-            	String[] parts2 = parts[1].split(":");
-            	int converted_D = (int) Math.ceil(ToNumber(parts2[1]));
-            	
-            	delays.put(StreamID, converted_D);	
-			}
-            bufferedReader.close();
-			
-		} catch (Exception e) {
-			 //e.printStackTrace();
-		}
-    	return delays;
-    	
-    	
-    }
-    // Convert to Number
-    private double ToNumber(String s) {
-    	double number = -1;
-    	try {
-    		number  = Double.parseDouble(s);
-			
-		} catch (Exception e) {
-			//e.printStackTrace();
-		}
-    	return number;
-    }
-
 	public List<Messages> getMessages(){
         return messages;
     }

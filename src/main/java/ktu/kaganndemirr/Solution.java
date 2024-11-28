@@ -154,19 +154,19 @@ class Solution {
 		}
     }
 
-	// GCD (Greatest Common Divisor) hesaplama fonksiyonu
-	public static int gcd(int a, int b) {
-		while (b != 0) {
-			int temp = b;
-			b = a % b;
-			a = temp;
-		}
-		return a;
-	}
-
 	// LCM (Least Common Multiple) hesaplama fonksiyonu
 	public static int LCM(int a, int b) {
-		return (a * b) / gcd(a, b);
+		// Checking for the largest
+		// Number between them
+		int ans = Math.max(a, b);
+
+		// Checking for a smallest number that
+		// can de divided by both numbers
+        while (ans % a != 0 || ans % b != 0) {
+            ans++;
+        }
+
+		return ans;
 	}
 
     public int getNOutPorts() {

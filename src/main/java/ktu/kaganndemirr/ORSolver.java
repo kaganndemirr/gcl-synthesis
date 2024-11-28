@@ -69,7 +69,6 @@ class ORSolver {
 	    		dataUnloader.WriteData(OptSolution, "Silviu", method.getSolutionNumber());
 	    	}
 	    }
-	    dataUnloader.Report(OptSolution, solver.wallTime());
 
 
 

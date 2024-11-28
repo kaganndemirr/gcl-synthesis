@@ -1,9 +1,9 @@
 #!R id, size(byte), deadline, <virtual link id>, type [TT, RC], [period | rate] (us), [offset | ] [packed | fragmented]
-Stream1, 500, 2000, vll, CLASS_A, 2875, 0.0
-Stream2, 500, 50000, vl2, CLASS_B, 3500, 0.0
-Stream3, 46, 2000, vl3, CLASS_A, 4000, 0.0
-Stream4, 46, 2000, vl4, CLASS_A, 4000, 0.0
-Stream5, 500, 2000, vl5, CLASS_A, 1875, 0.0
-Stream6, 500, 2000, vl6, CLASS_A, 1500, 0.0
-Stream7, 500, 50000, vl7, CLASS_B, 3000, 0.0
-Stream8, 200, 2000, vl8, CLASS_A, 1250, 0.0
+Stream1, 500, 2000, vll, TT, 2875, 0.0
+Stream2, 500, 50000, vl2, TT, 3500, 0.0
+Stream3, 46, 2000, vl2, TT, 4000, 0.0
+Stream4, 46, 2000, vl4, TT, 4000, 0.0
+Stream5, 500, 2000, vl5, TT, 1875, 0.0
+Stream6, 500, 2000, vl6, TT, 1500, 0.0
+Stream7, 500, 50000, vl7, TT, 3000, 0.0
+Stream8, 200, 2000, vl8, TT, 1250, 0.0
