@@ -31,13 +31,6 @@ public class NetOpt {
 
         ORSolver optimizer = new ORSolver(initial_Solution, debugmode);
 
-
-        //Run optimizer
-        if(args.length != 0)
-        {
-            optimizer.setResultPath(args[0]);
-        }
-
         optimizer.Run();
 
     }

@@ -1,0 +1,2 @@
+# link rate, integrationMode, bandwidthFractionA, bandwidthFractionB
+1000, GuardBand, Frozen, 0.4, 0.2, 0.1, 0.05,

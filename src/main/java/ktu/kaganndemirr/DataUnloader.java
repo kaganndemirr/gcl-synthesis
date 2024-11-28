@@ -1,14 +1,9 @@
 package ktu.kaganndemirr;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -159,43 +154,136 @@ class DataUnloader {
         costValues.getLast().add(averagee2e);
         costValues.getLast().add(fails);
     }
+
     private void getCostValues(Solution solution) {
-    	List<Integer> costs = new ArrayList<Integer>();
-    	for (int val : solution.getCosts()) {
-			costs.add(val);
-		}
+        List<Integer> costs = new ArrayList<>(solution.getCosts());
     	costValues.add(costs);
     	System.out.println("Current Cost is: " + costs.get(0) + " , " + costs.get(1));
     }
+
     private void UnloadLuxi(Solution solution, String DirPath){
     	try {
     		int linecounter = 0;
     		Files.createDirectories(Paths.get(DirPath));
-    		PrintWriter writer = new PrintWriter(DirPath + "/historySCHED1.txt", "UTF-8");
+			BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(DirPath + "/historySCHED1.txt"));
     		for (Switches sw : solution.SW) {
 				for (Port port : sw.ports) {
 					if(port.outPort) {
 						String routeLink = sw.Name + "," + port.connectedTo;
 						if(linecounter != 0) {
-							writer.println();
+							writer.newLine();
 						}
-						writer.println(routeLink);
+						writer.write(routeLink);
+						writer.newLine();
 						linecounter++;
-						for (int i = 0; i < port.Tclose.length; i++) {
-							String frame = port.Topen[i] + "\t" + port.Tclose[i] + "\t" + port.Period + "\t" + port.affiliatedQue[i];
-							writer.println(frame);
+						List<Integer> frequencyList = new ArrayList<>();
+						for(Stream stream: port.AssignedStreams){
+							frequencyList.add(stream.N_instances);
+						}
+						List<Integer> tOpenList = Arrays.stream(port.Topen).boxed().toList();
+						List<Integer> tCloseList = Arrays.stream(port.Tclose).boxed().toList();
+
+						List<List<Integer>> openResultList = new ArrayList<>();
+						List<List<Integer>> closeResultList = new ArrayList<>();
+						int startIndex = 0;
+
+						for(Integer frequency: frequencyList){
+							List<Integer> openSublist = tOpenList.subList(startIndex, startIndex + frequency);
+							openResultList.add(new ArrayList<>(openSublist));
+
+							List<Integer> closeSublist = tCloseList.subList(startIndex, startIndex + frequency);
+							closeResultList.add(new ArrayList<>(closeSublist));
+							startIndex += frequency;
+						}
+
+						for(int i = 0; i < port.AssignedStreams.size(); i++){
+							for(int j = 0; j < openResultList.get(i).size(); j++){
+								String frame = openResultList.get(i).get(j) + "\t" + closeResultList.get(i).get(j) + "\t" + port.AssignedStreams.get(i).name + "\t" + j;
+								writer.write(frame);
+								writer.newLine();
+							}
+
+						}
+					}
+					else {
+						if(port.connectedToES){
+							String routeLink = port.connectedTo + "," + sw.Name;
+							if(linecounter != 0) {
+								writer.newLine();
+							}
+							writer.write(routeLink);
+							writer.newLine();
+							linecounter++;
 						}
 					}
 				}
 			}
-    		writer.print("#");
+			writer.newLine();
+    		writer.write("#");
     		writer.close();
+
+			sortAndWrite(DirPath + "/historySCHED1.txt", DirPath + "/historySCHED1_New.txt");
+
     	} catch (Exception e){
             e.printStackTrace();
         }
-    	
-    	
     }
+
+	public static void sortAndWrite(String inputFile, String outputFile) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+		String currentLine;
+		String currentLink = null;
+		List<String> currentData = new ArrayList<>();
+
+		while ((currentLine = reader.readLine()) != null) {
+			currentLine = currentLine.trim();
+
+			if (currentLine.equals("#")) {  // Satır sadece # içeriyorsa ignore et
+				continue;
+			}
+
+			if (currentLine.contains(",")) {  // Yeni bir link tespit edildi
+				// Önceki linkin verilerini işleyip yaz
+				if (currentLink != null && !currentData.isEmpty()) {
+					writeSortedData(writer, currentLink, currentData);
+				}
+
+				// Yeni link için hazırlan
+				currentLink = currentLine;
+				currentData.clear();
+			} else if (!currentLine.isEmpty()) {  // Veri satırı
+				currentData.add(currentLine);
+			}
+		}
+
+		// Son linki işleyip yaz
+		if (currentLink != null && !currentData.isEmpty()) {
+			writeSortedData(writer, currentLink, currentData);
+		}
+
+		reader.close();
+		writer.close();
+	}
+
+	private static void writeSortedData(BufferedWriter writer, String link, List<String> data) throws IOException {
+		// Veriyi ilk sütundaki sayıya göre sıralama
+		data.sort((line1, line2) -> {
+			int num1 = Integer.parseInt(line1.split("\\s+")[0]);
+			int num2 = Integer.parseInt(line2.split("\\s+")[0]);
+			return Integer.compare(num1, num2);
+		});
+
+		// Link ve sıralı veriyi yaz
+		writer.write(link);
+		writer.newLine();
+		for (String line : data) {
+			writer.write(line);
+			writer.newLine();
+		}
+	}
+
     private void UnloadOMNET(Solution solution, String DirPath) {
     	Unloadned(solution, DirPath);
     	Unloadini(solution, DirPath);
