@@ -48,7 +48,7 @@ class Solution {
     private void Create(List<Messages> _messages, List<Routes> routes, List<ControlApp> CAs, List<NetSwitch> SWs){
 
         for (Messages item : _messages) {
-            streams.add(new Stream(item.id, item.period, item.deadline, item.size, item.priority, item.offset));
+            streams.add(new Stream(item.id, item.name, item.period, item.deadline, item.size, item.priority, item.offset));
         }
         for (Routes item : routes) {
         	

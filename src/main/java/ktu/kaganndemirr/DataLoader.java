@@ -97,12 +97,13 @@ class DataLoader {
 
     private static Messages getMessages(Element nNode) {
         int _id = Integer.parseInt(nNode.getAttribute("id"));
+        String name = nNode.getAttribute("name");
         int _deadline = Integer.parseInt(nNode.getAttribute("deadline"));
         int _period = Integer.parseInt(nNode.getAttribute("period"));
         int _size = Integer.parseInt(nNode.getAttribute("size"));
         int _priority = Integer.parseInt(nNode.getAttribute("priority"));
         int _offset = Integer.parseInt(nNode.getAttribute("offset"));
-        return new Messages(_id,_period,_deadline,_size, _priority, _offset);
+        return new Messages(_id, name, _period,_deadline,_size, _priority, _offset);
     }
 
     // Read Luxi WCDelay file

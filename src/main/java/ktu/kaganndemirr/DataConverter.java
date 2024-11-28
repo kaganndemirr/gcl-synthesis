@@ -42,6 +42,7 @@ class DataConverter {
 					String[] parts = line.split(", ");
 					xmlWriter.writeStartElement("Message");
 					xmlWriter.writeAttribute("id", String.valueOf(messageId));
+					xmlWriter.writeAttribute("name", parts[0]);
 					xmlWriter.writeAttribute("size", parts[1]);
 					xmlWriter.writeAttribute("deadline", String.valueOf((int) Double.parseDouble(parts[2])));
 					xmlWriter.writeAttribute("period", String.valueOf((int) Double.parseDouble(parts[5])));

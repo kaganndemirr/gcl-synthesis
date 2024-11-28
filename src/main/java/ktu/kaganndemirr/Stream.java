@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Stream {
-	public Stream(int _id, int _period, int _deadline, int _size, int priority, int _offset){
+	public Stream(int _id, String name, int _period, int _deadline, int _size, int priority, int _offset){
         Id = _id;
+        this.name = name;
         Period = _period;
         Deadline = _deadline;
         Size = _size;
@@ -24,8 +25,9 @@ public class Stream {
         CroutingList = new ArrayList<String>();
 
     }
-	public Stream(int _id, int _period, int _deadline, int _size, int priority, int _offset, int _hyper, int _instances, List<String> _routing, List<String> _crouting){
+	public Stream(int _id, String name, int _period, int _deadline, int _size, int priority, int _offset, int _hyper, int _instances, List<String> _routing, List<String> _crouting){
         Id = _id;
+        this.name = name;
         Period = _period;
         Deadline = _deadline;
         Size = _size;
@@ -51,6 +53,7 @@ public class Stream {
 	
 	
     public int Id;
+    public String name;
     public int Period;
     public int Deadline;
     public int Size;
@@ -76,18 +79,21 @@ public class Stream {
 		}
     	
     }
+
     public String getFirstSwitch() {
     	if(!routingList.isEmpty()) {
     		return routingList.getFirst();
     	}
     	return null;
     }
+
     public String getLastSwitch() {
     	if(!routingList.isEmpty()) {
     		return routingList.getLast();
     	}
     	return null;
     }
+
     public String getPreviousSwitch(String currentSW) {
     	for (int i = 0; i < routingList.size(); i++) {
 			if(routingList.get(i).equals(currentSW)) {
@@ -96,6 +102,7 @@ public class Stream {
 		}
     	return null;
     }
+    
     public boolean isThisFirstSwitch(String swName) {
     	for (int i = 0; i < routingList.size(); i++) {
 			if(routingList.get(i).equals(swName)) {
@@ -106,6 +113,7 @@ public class Stream {
 		}
     	return false;
     }
+
     public List<String> getPorts(){
     	List<String> nameStrings = new ArrayList<String>();
     	for (int i = 1; i < (CroutingList.size()-1); i++) {
@@ -115,7 +123,7 @@ public class Stream {
     }
 
     public Stream Clone() {
-    	return new Stream(Id, Period, Deadline, Size, Priority, offset, Hyperperiod, N_instances, routingList, CroutingList );
+    	return new Stream(Id, name, Period, Deadline, Size, Priority, offset, Hyperperiod, N_instances, routingList, CroutingList );
     }
 
 }

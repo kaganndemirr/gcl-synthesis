@@ -87,35 +87,21 @@ class DataUnloader {
 			UnloadGCLs(solution, GCLsPath, solutionFile);
 		}
 		
-		if(name.contains("Niklas")) {
-    		//visualizer.CreateTotalWindowSVG(solution, schedulePath, solution.Hyperperiod);
-    		//UnloadPorts(solution, switchPath, solutionFile);
-    		UnloadLuxi(solution, LuxiToolPath);
-    		NETCALCall(solution);
-    		NETCALLRun(solution);
-    		
-		}else if(name.contains("Hybrid")){
-    		UnloadLuxi(solution, LuxiToolPath);
-    		NETCALCall(solution);
-    		NETCALLRun(solution);
+		if (GeneralInterface) {
+			//visualizer.CreateTotalSVG(solution, schedulePath, solution.Hyperperiod);
+			UnloadStreams(solution, streamPath, solutionFile);
+			UnloadPorts(solution, switchPath, solutionFile);
 		}
-		else{
-			if (GeneralInterface) {
-	    		//visualizer.CreateTotalSVG(solution, schedulePath, solution.Hyperperiod);
-	    		UnloadStreams(solution, streamPath, solutionFile);
-	    		UnloadPorts(solution, switchPath, solutionFile);
-			}
-			if (JitterTimeInterface) {
-	    		CreateJitterTimeInterface(solution, jitterPath, "S_"+counter);
-	    		UnloadJitterStreams(solution, jitterPath, solutionFile);
-			}
-			if (LuxiInterface) {
-	    		//String luxiToolPath = "Results/LuxiInterface/"+ name;
-	    		UnloadLuxi(solution, LuxiToolPath);
-			}
-			if (StreamWiseInterface) {
-	    		//visualizer.CreateStreamWiseSVG(solution, schedulePath, solution.Hyperperiod);
-			}
+		if (JitterTimeInterface) {
+			CreateJitterTimeInterface(solution, jitterPath, "S_"+counter);
+			UnloadJitterStreams(solution, jitterPath, solutionFile);
+		}
+		if (LuxiInterface) {
+			//String luxiToolPath = "Results/LuxiInterface/"+ name;
+			UnloadLuxi(solution, LuxiToolPath);
+		}
+		if (StreamWiseInterface) {
+			//visualizer.CreateStreamWiseSVG(solution, schedulePath, solution.Hyperperiod);
 		}
 		
 
@@ -160,7 +146,7 @@ class DataUnloader {
 					
 				}
 			}
-			if(delays.size() > 0) averagee2e /= delays.size();
+			if(!delays.isEmpty()) averagee2e /= delays.size();
 			if(!isGood) averagee2e = Integer.MAX_VALUE;
 			
 
@@ -170,8 +156,8 @@ class DataUnloader {
         {
             //e.printStackTrace();
         }	
-        costValues.get(costValues.size() - 1).add(averagee2e);
-        costValues.get(costValues.size() - 1).add(fails);
+        costValues.getLast().add(averagee2e);
+        costValues.getLast().add(fails);
     }
     private void getCostValues(Solution solution) {
     	List<Integer> costs = new ArrayList<Integer>();
@@ -196,7 +182,7 @@ class DataUnloader {
 						writer.println(routeLink);
 						linecounter++;
 						for (int i = 0; i < port.Tclose.length; i++) {
-							String frame = String.valueOf(port.Topen[i]) + "\t" + String.valueOf(port.Tclose[i]) + "\t" + String.valueOf(port.Period) + "\t" + String.valueOf(port.affiliatedQue[i]);
+							String frame = port.Topen[i] + "\t" + port.Tclose[i] + "\t" + port.Period + "\t" + port.affiliatedQue[i];
 							writer.println(frame);
 						}
 					}
@@ -345,7 +331,7 @@ class DataUnloader {
 							
 						}else {
 				    		Optional<Port> tempport = sw.ports.stream().filter(x -> (x.connectedTo.equals(port.connectedTo) && x.outPort)).findFirst();
-				    		if(!tempport.isPresent()) {
+				    		if(tempport.isEmpty()) {
 					    		Optional<Switches> tempsw = solution.SW.stream().filter(x -> (x.Name.equals(port.connectedTo))).findFirst();
 					    		if(tempsw.isPresent()) {
 					    			Switches Csw = tempsw.get();
@@ -1034,7 +1020,7 @@ class DataUnloader {
 				if(port.outPort) {
 					if(sw.Name.equals(swName)) {
 		        		Optional<Stream> tempStream = port.AssignedStreams.stream().filter(x -> x.Id == mID).findFirst();
-		        		if (!tempStream.isEmpty()) {
+		        		if (tempStream.isPresent()) {
 		        			return port;
 		        		}
 					}
