@@ -1,5 +1,5 @@
 #!R id, size(byte), deadline, <virtual link id>, type [TT, RC], [period | rate] (us), [offset | ] [packed | fragmented]
-Stream1, 500, 2000, vll, TT, 2875, 0.0
+Stream1, 500, 2000, vl1, TT, 2875, 0.0
 Stream2, 500, 50000, vl2, TT, 3500, 0.0
 Stream3, 46, 2000, vl2, TT, 4000, 0.0
 Stream4, 46, 2000, vl4, TT, 4000, 0.0

@@ -8,14 +8,14 @@ class ORSolver {
     Solver solver;
     Solution Current;
     DataUnloader dataUnloader = new DataUnloader();
-    boolean DebogMode;
+    boolean DebugMode;
     
     
 	static { System.loadLibrary("jniortools");}
 
-	public ORSolver(Solution current, boolean debogstat) {
+	public ORSolver(Solution current, boolean debugstat) {
 		setSolution(current);
-		DebogMode = debogstat ;
+		DebugMode = debugstat ;
 	
 	}
 	private void setSolution(Solution current) {
@@ -50,7 +50,7 @@ class ORSolver {
 
 
 			dataUnloader.CaptureSolution(OptSolution, Tnow);
-			if(DebogMode) {
+			if(DebugMode) {
 				dataUnloader.WriteData(OptSolution, "Silviu", method.getSolutionNumber());
 			}
 
@@ -65,7 +65,7 @@ class ORSolver {
 	    long duration = end - start;
 	    
 	    if(OptSolution != null) {
-	    	if(!DebogMode) {
+	    	if(!DebugMode) {
 	    		dataUnloader.WriteData(OptSolution, "Silviu", method.getSolutionNumber());
 	    	}
 	    }

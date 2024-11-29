@@ -94,7 +94,7 @@ public class Port {
 
     void AssignStream(Stream s) {
         AssignedStreams.add(s);
-        Hyperperiod = LCM(Hyperperiod, s.Period);
+        Hyperperiod = Util.lcm(Hyperperiod, s.Period);
 
     }
 

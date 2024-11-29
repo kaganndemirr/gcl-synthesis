@@ -1,5 +1,5 @@
 #!R id, size(byte), deadline, <virtual link id>, type [TT, RC], [period | rate] (us), [offset | ] [packed | fragmented]
-s1, 46, 2000.0, vll, TT, 1000000.0, 0.0
+s1, 46, 2000.0, vl1, TT, 1000000.0, 0.0
 s2, 46, 2000.0, vl1, TT, 200000.0, 0.0
 s3, 46, 2000.0, vl2, TT, 1000000.0, 0.0
 s4, 46, 2000.0, vl2, TT, 200000.0, 0.0

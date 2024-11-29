@@ -69,26 +69,6 @@ class DataLoader {
                     routings.add(tc);  
                 }
             }
-            for (int i = 0; i < appList.getLength(); i++) {
-            	Node nNode = appList.item(i);
-            	List<Integer> inIDList = new ArrayList<Integer>();
-            	List<Integer> outIDList = new ArrayList<Integer>();
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                	Element eElement = (Element) nNode;
-                	int _id = Integer.parseInt(eElement.getAttribute("id"));
-                	int wcet = Integer.parseInt(eElement.getAttribute("C"));
-                    NodeList listednotes = eElement.getElementsByTagName("in");
-                    for (int j = 0; j < listednotes.getLength(); j++) {
-                    	inIDList.add(Integer.valueOf(listednotes.item(i).getTextContent()));
-					}
-                    NodeList listednotes2 = eElement.getElementsByTagName("out");
-                    for (int j = 0; j < listednotes2.getLength(); j++) {
-                    	outIDList.add(Integer.valueOf(listednotes2.item(i).getTextContent()));
-					}
-                	ControlApp tc = new ControlApp(_id, wcet, inIDList, outIDList);
-                	CAs.add(tc);
-                }
-			}
 
         } catch (Exception e){
             e.printStackTrace();

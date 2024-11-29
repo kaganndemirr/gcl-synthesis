@@ -1,0 +1,12 @@
+#!R id, size(byte), deadline, <virtual link id>, type [TT, RC], priority, [period | rate] (us), [offset | ] [packed | fragmented]
+Flow0, 900, 2500, vl0, TT, 2500, 0.0
+Flow1, 1200, 2500, vl1, TT, 2500, 0.0
+Flow2, 800, 2500, vl2, TT, 2500, 0.0
+Flow3, 527, 1000, vl3, TT, 1000, 0.0
+Flow4, 700, 2500, vl4, TT, 2500, 0.0
+Flow5, 737, 2500, vl5, TT, 2500, 0.0
+Flow6, 745, 1500, vl6, TT, 1500, 0.0
+Flow7, 1045, 2500, vl7, TT, 2500, 0.0
+Flow8, 950, 2500, vl8, TT, 2500, 0.0
+Flow9, 654, 2500, vl2, CLASS_A, 1500, 0.0
+Flow10, 745, 1500, vl3, CLASS_B, 4000, 0.0

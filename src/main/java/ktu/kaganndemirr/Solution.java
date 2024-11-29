@@ -146,7 +146,7 @@ class Solution {
 
     private void Initialize(){
     	for (Stream s : streams) {
-    		Hyperperiod = LCM(Hyperperiod, s.Period);
+    		Hyperperiod = Util.lcm(Hyperperiod, s.Period);
 		}
     	for (Stream s : streams) {
     		s.initiate(Hyperperiod);
@@ -156,21 +156,6 @@ class Solution {
 			sw.initiate();
 		}
     }
-
-	// LCM (Least Common Multiple) hesaplama fonksiyonu
-	public static int LCM(int a, int b) {
-		// Checking for the largest
-		// Number between them
-		int ans = Math.max(a, b);
-
-		// Checking for a smallest number that
-		// can de divided by both numbers
-        while (ans % a != 0 || ans % b != 0) {
-            ans++;
-        }
-
-		return ans;
-	}
 
     public int getNOutPorts() {
     	int Outports = 0;

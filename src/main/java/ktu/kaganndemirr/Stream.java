@@ -73,7 +73,7 @@ public class Stream {
     public void SetRouting(List<String> routing) {
     	for (String s : routing) {
     		CroutingList.add(s);
-			if(!s.contains("ES")) {
+			if(s.contains("SW") || s.contains("B")) {
 				routingList.add(s);
 			}
 		}
