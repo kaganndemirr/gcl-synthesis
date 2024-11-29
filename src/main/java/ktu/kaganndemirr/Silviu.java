@@ -10,28 +10,34 @@ public class Silviu extends SolutionMethod{
 	Solution Current;
 	Solver solver;
 	DecisionBuilder db;
+
 	public Silviu(Solver _solver) {
 		solver = _solver;
 	}
+
 	public void Initialize(Solution current) {
 		setInit(current);
 		initVariables();
 	}
+
 	public void setInit(Solution init) {
 		Current = init;
 	}
+
 	public void initVariables() {
 		NOutports = Current.getNOutPorts();
 		Offset = new IntVar[NOutports][][];
 		Costs = new IntVar[5];
 		TotalVars = AssignVars(Offset);
 	}
+
 	public void addConstraints() {
 		Constraint0(Offset);
 		Constraint1(Offset);
 		Constraint2(Offset);
 		Constraint3(Offset);
 	}
+
 	public void addCosts() {
 		Cost0(Offset, Costs);
 		Cost1(Offset, Costs);
@@ -39,6 +45,7 @@ public class Silviu extends SolutionMethod{
 		Cost3(Offset, Costs);
 		OptVar = CostMinimizer(Costs);
 	}
+
 	public void addDecision() {
 		IntVar[] x = new IntVar[TotalVars];
 		FlatArray(Offset, x, NOutports);
@@ -48,6 +55,7 @@ public class Silviu extends SolutionMethod{
 		//db = solver.makePhase(x,  solver.CHOOSE_RANDOM, solver.ASSIGN_RANDOM_VALUE);
 
 	}
+
 	public void addSolverLimits() {
 		int hours = 10;
 		int minutes = 20;
@@ -56,15 +64,19 @@ public class Silviu extends SolutionMethod{
 		solver.newSearch(getDecision(),OptVar, limit);
 	    System.out.println(solver.model_name() + " Initiated");
 	}
+
 	public DecisionBuilder getDecision() {
 		return db;
 	}
+
 	public int getSolutionNumber() {
 		return TotalRuns;
 	}
+
 	public Solution cloneSolution() {
 		return AssignSolution(Offset, Costs);
 	}
+
 	int NOutports;
 	int TotalVars;
 	IntVar[][][] Offset;
@@ -106,6 +118,7 @@ public class Silviu extends SolutionMethod{
 		}
 		return Totalvars;
 	}
+
 	private void FlatArray(IntVar[][][] source, IntVar[] destination, int sourcesize) {
 		int counter = 0;
 		for (int i = 0; i < sourcesize; i++) {
@@ -118,6 +131,7 @@ public class Silviu extends SolutionMethod{
 			}
 		}
 	}
+
 	private Solution AssignSolution(IntVar[][][] Offset, IntVar[] costs)  {
 		Current.costValues.clear();
 		Current.Variables = TotalVars;
@@ -155,6 +169,7 @@ public class Silviu extends SolutionMethod{
 		return Current.Clone();
 
 	}
+
 	private void Constraint0(IntVar[][][] Offset) {
 	//Link Constraint
 	//Equation Number 1 of the paper Scheduling Real-time communication in IEEE 802.1 Qbc Time sensitive networks
@@ -196,6 +211,7 @@ public class Silviu extends SolutionMethod{
 			}
 		}
 	}
+
 	private void Constraint1(IntVar[][][] Offset) {
 		//Flow Transmission Constraint
 		//Equation Number 2 of the paper Scheduling Real-time communication in IEEE 802.1 Qbc Time sensitive networks
@@ -230,6 +246,7 @@ public class Silviu extends SolutionMethod{
 			
 		}
 	}
+
 	private void Constraint2(IntVar[][][] Offset) {
 		//End to End Constraint
 		//Equation Number 3 of the paper Scheduling Real-time communication in IEEE 802.1 Qbc Time sensitive networks
@@ -257,6 +274,7 @@ public class Silviu extends SolutionMethod{
 		}
 		
 	}
+
 	private void Constraint3(IntVar[][][] Offset) {
 		//Isolation Constraint
 		//Equation Number 6 of the paper Scheduling Real-time communication in IEEE 802.1 Qbc Time sensitive networks
@@ -344,6 +362,7 @@ public class Silviu extends SolutionMethod{
 		
 
 	}
+
 	private OptimizeVar Cost0(IntVar[][][] Offset, IntVar[] Costs) {
 		IntVar eExpr = null;
 		for (Stream stream : Current.streams) {
@@ -371,6 +390,7 @@ public class Silviu extends SolutionMethod{
 		Costs[0] = eExpr;
 		return solver.makeMinimize(Costs[0], 1);
 	}
+
 	private OptimizeVar Cost1(IntVar[][][] Offset, IntVar[] Costs) {
 		IntVar eExpr = null;
 		for (Stream stream : Current.streams) {
