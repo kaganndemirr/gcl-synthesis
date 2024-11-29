@@ -111,9 +111,10 @@ class Solution {
 		}
         
     }
+
     private void setSourceES(Routes item) {
-    	Optional<EndSystems> tempSourcEndSystems = ES.stream().filter(x -> x.Name.equals(item.nodes.getFirst())).findFirst();
-    	if(tempSourcEndSystems.isEmpty()) {
+    	Optional<EndSystems> tempSourceEndSystems = ES.stream().filter(x -> x.Name.equals(item.nodes.getFirst())).findFirst();
+    	if(tempSourceEndSystems.isEmpty()) {
     		EndSystems temp = new EndSystems(item.nodes.getFirst());
     		for (int ID : item.messsageIDs) {
     			temp.addOutID(ID);
@@ -121,11 +122,12 @@ class Solution {
     		ES.add(temp);
     	}else {
     		for (int ID : item.messsageIDs) {
-    			tempSourcEndSystems.get().addOutID(ID);
+				tempSourceEndSystems.get().addOutID(ID);
 			}
     		
     	}
     }
+
     private void setSinkES(Routes item) {
     	int NodeSize = item.nodes.size();
     	Optional<EndSystems> tempSinkEndSystems = ES.stream().filter(x -> x.Name.equals(item.nodes.get(NodeSize-1))).findFirst();
@@ -141,6 +143,7 @@ class Solution {
 			}
     	}
     }
+
     private void Initialize(){
     	for (Stream s : streams) {
     		Hyperperiod = LCM(Hyperperiod, s.Period);
@@ -193,6 +196,7 @@ class Solution {
 		}
 		return nameStrings;
     }
+
     public Solution Clone() {
     	return new Solution(streams, ES, SW, Apps, costValues, (Hyperperiod), Variables);
     }
