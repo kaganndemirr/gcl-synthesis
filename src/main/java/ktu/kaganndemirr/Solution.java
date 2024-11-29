@@ -68,7 +68,7 @@ class Solution {
         		for ( int mID : item.messsageIDs) {
         			Optional<Stream> tempStream = streams.stream().filter(x -> (x.Id == mID)).findFirst();
 					Stream mStream = tempStream.get();
-					crrSwitches.addSteams(mStream);
+					crrSwitches.addStreams(mStream);
 				}
         		
 			}

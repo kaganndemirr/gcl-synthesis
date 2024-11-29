@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Switches {
 	String Name;
-	int Hyperperiod = 1;
+	long Hyperperiod = 1;
 	List<Stream> streams =  new ArrayList<Stream>();
 	List<Port> ports = new ArrayList<Port>();
 	int clockAsync = 0;
@@ -23,7 +23,7 @@ public class Switches {
 		//clockAsync =rndRandom.nextInt(10);
 		
 	}
-	public Switches(String _name, int _hyperperiod, int _clock, List<Stream> _s, List<Port> _ports, Map<Integer, Integer> _delayTable) {
+	public Switches(String _name, long _hyperperiod, int _clock, List<Stream> _s, List<Port> _ports, Map<Integer, Integer> _delayTable) {
 		Name = _name;
 		Hyperperiod = _hyperperiod;
 		clockAsync = _clock;
@@ -41,16 +41,16 @@ public class Switches {
         delayTable.putAll(inTable);
 	}
 
-	public void addSteams(Stream s) {
+	public void addStreams(Stream s) {
 		Hyperperiod = LCM(Hyperperiod, s.Period);
 		streams.add(s);
 	}
 
 	// LCM (Least Common Multiple) hesaplama fonksiyonu
-	public static int LCM(int a, int b) {
+	public static long LCM(long a, int b) {
 		// Checking for the largest
 		// Number between them
-		int ans = Math.max(a, b);
+		long ans = Math.max(a, b);
 
 		// Checking for a smallest number that
 		// can de divided by both numbers

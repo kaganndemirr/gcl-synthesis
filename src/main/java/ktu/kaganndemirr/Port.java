@@ -23,7 +23,7 @@ public class Port {
 
     public Port(String sideName, boolean isOut, int microtick){
         connectedTo = sideName;
-        connectedToES = sideName.contains("ES");
+        connectedToES = !sideName.contains("SW") || !sideName.contains("B");
         outPort = isOut;
 
         for (int i = 0; i < QLength; i++) {
